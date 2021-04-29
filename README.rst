@@ -111,7 +111,7 @@ GENERATE_HEADER
 The following call is a simple example to the vala_precompile macro showing an
 example to every of the optional sections::
 
-    vala_precompile(VALA_C
+    vala_precompile(myexecutable_vala VALA_C
         source1.vala
         source2.vala
         source3.vala

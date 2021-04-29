@@ -52,7 +52,7 @@
 #   find_package(Vala "0.12" REQUIRED)
 #   include(${VALA_USE_FILE})
 #
-#   vala_precompile(VALA_C
+#   vala_precompile(<new_target_name> VALA_C
 #     SOURCES
 #       source1.vala
 #       source2.vala
@@ -109,7 +109,7 @@
 
 include(CMakeParseArguments)
 
-function(vala_precompile output)
+function(vala_precompile new_target_name output)
     cmake_parse_arguments(ARGS "" "DIRECTORY;GENERATE_HEADER;GENERATE_VAPI"
         "SOURCES;PACKAGES;OPTIONS;DEFINITIONS;CUSTOM_VAPIS" ${ARGN})
 
@@ -170,10 +170,7 @@ function(vala_precompile output)
         list(APPEND header_arguments "--internal-header=${DIRECTORY}/${ARGS_GENERATE_HEADER}_internal.h")
     endif(ARGS_GENERATE_HEADER)
 
-    add_custom_command(OUTPUT ${out_files} 
-    COMMAND 
-        ${VALA_EXECUTABLE} 
-    ARGS 
+    add_custom_target(${new_target_name} ${VALA_EXECUTABLE}
         "-C" 
         ${header_arguments} 
         ${vapi_arguments}
@@ -187,6 +184,11 @@ function(vala_precompile output)
     DEPENDS 
         ${in_files} 
         ${ARGS_CUSTOM_VAPIS}
+    SOURCES
+        ${in_files}
+        ${ARGS_CUSTOM_VAPIS}
+    BYPRODUCTS
+        ${out_files}
     )
     set(${output} ${out_files} PARENT_SCOPE)
 endfunction(vala_precompile)
